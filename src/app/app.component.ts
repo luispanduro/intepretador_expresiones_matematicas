@@ -26,14 +26,6 @@ export class AppComponent implements AfterViewInit {
   raizX = '\\sqrt{x}';
   raizNX = '\\sqrt[n]{x}';
 
-  flagVariavle: boolean = false;
-  flagExponente: boolean = false;
-  flagFraccion: boolean = false;
-  flagRaiz: boolean = false;
-  flagRaizN: boolean = false;
-
-  ecuacion = '';
-
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -61,113 +53,34 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  setVarible() {
-    this.flagVariavle = true;
-    this.flagExponente = false;
-    this.flagFraccion = false;
-    this.flagRaiz = false;
-    this.flagRaizN = false;
+  setEcuancion(expresion: string, inputTxt: HTMLInputElement) {
+    let exp;
+    if(expresion == 'variable') {
+      exp = ' x ';
+    }
+    else if(expresion == 'exponente') {
+      exp = ' x^{n} ';
+    }
+    else if(expresion == 'fraccion') {
+      exp = ' frac{x}{y} ';
+    }
+    else if(expresion == 'raiz') {
+      exp = ' sqrt{x} ';
+    }
+    else if(expresion == 'raizN') {
+      exp = ' sqrt[n]{x} '
+    }
+
+    const pos = inputTxt.selectionStart ?? 0;
+    const value = inputTxt.value;
+    const nuevaExpresion = value.slice(0, pos) + exp + value.slice(pos);
+    inputTxt.value = nuevaExpresion;
   }
 
-  setExponente() {
-    this.flagVariavle = false;
-    this.flagExponente = true;
-    this.flagFraccion = false;
-    this.flagRaiz = false;
-    this.flagRaizN = false;
-  }
-
-  setFraccion() {
-    this.flagVariavle = false;
-    this.flagExponente = false;
-    this.flagFraccion = true;
-    this.flagRaiz = false;
-    this.flagRaizN = false;
-  }
-
-  setRaiz() {
-    this.flagVariavle = false;
-    this.flagExponente = false;
-    this.flagFraccion = false;
-    this.flagRaiz = true;
-    this.flagRaizN = false;
-  }
-
-  setRaizN() {
-    this.flagVariavle = false;
-    this.flagExponente = false;
-    this.flagFraccion = false;
-    this.flagRaiz = false;
-    this.flagRaizN = true;
-  }
-
-  generateVariable(data1: any) {
-    const value1 = data1.value
-
-    let expresion = this.indep.replace('x', value1);
-
-    this.ecuacion += expresion;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
-      throwOnError: false
-    });
-  }
-
-  generateExponente(data1: any, data2:any) {
-    const value1 = data1.value
-    const value2 = data2.value
+  generateEquation(inputExpresion: HTMLInputElement) {
+    const expresion = inputExpresion.value.replace('frac', '\\frac').replace('sqrt', '\\sqrt').replace(/ /g, "")
     
-    let expresion = this.potencia.replace('x', value1).replace('n', value2);
-
-    this.ecuacion += expresion;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
-      throwOnError: false
-    });
-  }
-
-  generateFraccion(data1: any, data2:any) {
-    const value1 = data1.value
-    const value2 = data2.value
-    
-    let expresion = this.fraccion.replace('x', value1).replace('y', value2);
-
-    this.ecuacion += expresion;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
-      throwOnError: false
-    });
-  }
-
-  generateRaiz(data1: any) {
-    const value1 = data1.value
-    
-    let expresion = this.raizX.replace('x', value1);
-
-    this.ecuacion += expresion;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
-      throwOnError: false
-    });
-  }
-
-  generateRaizN(data1: any, data2:any) {
-    const value1 = data1.value
-    const value2 = data2.value
-    
-    let expresion = this.raizNX.replace('n', value1).replace('x', value2);
-
-    this.ecuacion += expresion;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
-      throwOnError: false
-    });
-  }
-
-  signo(value: any) {
-    this.ecuacion += value;
-
-    katex.render(this.ecuacion, this.resultado.nativeElement, {
+    katex.render(expresion, this.resultado.nativeElement, {
       throwOnError: false
     });
   }
